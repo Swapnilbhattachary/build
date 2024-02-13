@@ -4,7 +4,9 @@ import { Integration } from './types/integrations.js'
 import { TestOptions } from './types/options.js'
 
 type MergeIntegrationsOpts = {
+  // Integrations that have been configured in the TOML file
   configIntegrations?: { name: string; dev?: { path: string; force_run_in_build?: boolean } }[]
+  // Integrations that have been enabled on the site
   apiIntegrations: IntegrationResponse[]
   context: string
   testOpts?: TestOptions
@@ -18,6 +20,7 @@ export const mergeIntegrations = async function ({
   testOpts = {},
   offline,
 }: MergeIntegrationsOpts): Promise<Integration[]> {
+  // All integrations that are available to the site
   const availableIntegrations = await getAvailableIntegrations({ testOpts, offline })
 
   // Include all API integrations, unless they have a `dev` property and we are in the `dev` context
@@ -36,6 +39,7 @@ export const mergeIntegrations = async function ({
   const resolvedConfigIntegrations = configIntegrations
     .filter(
       (configIntegration) =>
+        // TODO - this every statement will exlude config integrations if they also exist in the apiIntegrations
         apiIntegrations.every((apiIntegration) => apiIntegration.slug !== configIntegration.name) ||
         ('dev' in configIntegration && context === 'dev'),
     )
@@ -44,9 +48,15 @@ export const mergeIntegrations = async function ({
         const integrationInstance = apiIntegrations.find(
           (apiIntegration) => apiIntegration.slug === configIntegration.name,
         )
+
+        const availableIntegration = availableIntegrations.find(
+          (availableIntegration) => availableIntegration.slug === configIntegration.name,
+        )
+
         return {
+          ...configIntegration,
           slug: configIntegration.name,
-          dev: configIntegration.dev,
+          version: configIntegration.dev.path ? undefined : availableIntegration?.hostSiteUrl,
           has_build: integrationInstance?.has_build ?? configIntegration.dev?.force_run_in_build ?? false,
         }
       }

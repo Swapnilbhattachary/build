@@ -25,6 +25,7 @@ import { getRedirectsPath, addRedirects } from './redirects.js'
  * `config` together with related properties such as the `configPath`.
  */
 export const resolveConfig = async function (opts) {
+  console.log('Resolving config')
   const {
     cachedConfig,
     cachedConfigPath,
@@ -42,7 +43,8 @@ export const resolveConfig = async function (opts) {
   const api = getApiClient({ token, offline, host, scheme, pathPrefix, testOpts })
 
   const parsedCachedConfig = await getCachedConfig({ cachedConfig, cachedConfigPath, token, api })
-  if (parsedCachedConfig !== undefined) {
+  if (!!false && parsedCachedConfig !== undefined) {
+    console.log('Returning cached config')
     return parsedCachedConfig
   }
 

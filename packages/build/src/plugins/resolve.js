@@ -186,7 +186,7 @@ const handleIntegrations = async function ({ integrations, autoPluginsDir, mode,
 }
 
 const resolveIntegration = async function ({ integration, autoPluginsDir, buildDir, context }) {
-  if (typeof integration.dev !== 'undefined' && context === 'dev') {
+  if (typeof integration.dev !== 'undefined' && context === 'dev' && typeof integration.dev.path !== 'undefined') {
     const { path } = integration.dev
     const pluginPath = await resolvePath(`${path}/.ntli/build`, buildDir)
 

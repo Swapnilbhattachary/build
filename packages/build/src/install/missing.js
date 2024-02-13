@@ -42,7 +42,7 @@ export const installIntegrationPlugins = async function ({
     logSubHeader(logs, 'Building integrations')
     logArray(
       logs,
-      integrationsToBuild.map(({ slug, dev: { path } }) => `${slug} from ${path}`),
+      integrationsToBuild.map(({ slug, dev: { path }, version }) => `${slug} from ${path ?? version}`),
     )
   }
   const packages = (
