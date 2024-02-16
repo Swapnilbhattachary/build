@@ -116,6 +116,7 @@ const getIntegrations = async function ({
   const baseUrl = new URL(host ? `http://${host}` : `https://api.netlifysdk.com`)
 
   try {
+    // TODO - see if we can use the users' auth from the CLI to call jigsaw to get integrations with full configuation info
     const response = await fetch(`${baseUrl}site/${siteId}/integrations/safe`)
 
     const integrations = await response.json()
