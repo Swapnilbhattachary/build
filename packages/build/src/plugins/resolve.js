@@ -78,6 +78,8 @@ export const resolvePluginsPath = async function ({
       context,
       testOpts,
     })
+
+    console.log('integrationPluginOptions', integrationPluginOptions[0].integration.config)
   }
 
   return [...pluginsOptionsE, ...integrationPluginOptions]

@@ -1,3 +1,5 @@
+import merge from 'deepmerge'
+
 import { getAvailableIntegrations } from './api/integrations.js'
 import { IntegrationResponse } from './types/api.js'
 import { Integration } from './types/integrations.js'
@@ -53,8 +55,18 @@ export const mergeIntegrations = async function ({
           (availableIntegration) => availableIntegration.slug === configIntegration.name,
         )
 
+        // TODO - test merging the config
+        // @ts-expect-error config does not exist on AvailableIntegration
+        availableIntegration.config = { some_setting: 'some_value_from_api', value_only_in_api: 'api_only' }
+
+        // Merge the config, prioritizing the local config over the API config
+        const mergedConfig = availableIntegration
+          ? /* @ts-expect-error - config does not exist on AvailableIntegration */
+            merge(availableIntegration.config, configIntegration.config)
+          : configIntegration
+
         return {
-          ...configIntegration,
+          config: mergedConfig,
           slug: configIntegration.name,
           version: configIntegration.dev.path ? undefined : availableIntegration?.hostSiteUrl,
           has_build: integrationInstance?.has_build ?? configIntegration.dev?.force_run_in_build ?? false,
