@@ -66,6 +66,7 @@ const addExpectedVersion = async function ({
   testOpts: Record<string, unknown>
   autoPluginsDir: string
 }) {
+  console.log({ packageName, loadedFrom, nodeVersion, pinnedVersion, featureFlags })
   if (!needsExpectedVersion(pluginOptions)) {
     return pluginOptions
   }
@@ -76,7 +77,9 @@ const addExpectedVersion = async function ({
   }
 
   const unfilteredVersions = pluginsList[packageName]
+  console.log({ unfilteredVersions })
   const versions = filterVersions(unfilteredVersions, featureFlags)
+  console.log({ versions })
   const [{ version: latestVersion, migrationGuide }] = versions
   const [{ version: expectedVersion }, { version: compatibleVersion, compatWarning }] = await Promise.all([
     getExpectedVersion({ versions, nodeVersion, packageJson, packagePath, buildDir, pinnedVersion }),
